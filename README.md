@@ -16,15 +16,14 @@ A Lovelace custom card for the **Sections** view of Home Assistant that displays
 
 ## Features
 
-- Fetches playlists, albums, or artists directly from your Music Assistant library
-- Adaptive grid layout — automatically calculates columns and rows based on the card's actual pixel size using `ResizeObserver`
-- **16 sort options**: date added, last played, play count, random, name, year, artist name (ascending and descending)
-- **Manual mode**: pin up to 12 specific items by Music Assistant URI with drag-and-drop reordering in the visual editor
-- Visual editor with entity picker filtered to Music Assistant `media_player` entities
-- Auto-detects the `config_entry_id` from the entity registry — no manual configuration needed
-- 100% HA theme tokens (`--ha-card-border-radius`, `--primary-color`, etc.) — adapts to any theme
-- Full keyboard navigation and ARIA attributes
-- No external dependencies, no build step required
+🎵 **Playlists, albums or artists** — choose what you want to browse
+🔊 **Pick your speaker** — any Music Assistant media player in your home
+🎛️ **Sort your way** — 16 options: recently added, last played, most played, random, alphabetical…
+📌 **Manual mode** — pin exactly the covers you want, drag to reorder
+🎨 **Fits your theme** — 100% aligned with your Home Assistant visual style
+⚡ **Built for Sections** — the grid adapts automatically to any card size
+
+One tap. The right vibe.
 
 ---
 
@@ -125,6 +124,60 @@ manual_items:
 | `artist_name` | Artist name (A → Z) |
 | `artist_name_desc` | Artist name (Z → A) |
 | `manual` | Manual order (uses `manual_items`) |
+
+---
+
+## Examples
+
+### Recently added playlists — full width
+
+Show your latest additions across the full dashboard width.
+
+```yaml
+type: custom:mass-playlist-card
+entity_id: media_player.salon
+media_type: playlist
+order_by: timestamp_added_desc
+item_size: 3
+```
+
+> _(screenshot coming soon)_
+
+---
+
+### Albums sorted by year — compact
+
+A tight grid of your newest albums, smaller covers for a denser look.
+
+```yaml
+type: custom:mass-playlist-card
+entity_id: media_player.salon
+media_type: album
+order_by: year_desc
+item_size: 2
+```
+
+> _(screenshot coming soon)_
+
+---
+
+### Manual — your go-to playlists
+
+Always there, always in the right order. The ones you actually reach for.
+
+```yaml
+type: custom:mass-playlist-card
+entity_id: media_player.salon
+media_type: playlist
+order_by: manual
+item_size: 4
+manual_items:
+  - library://playlist/5    # Morning coffee
+  - library://playlist/12   # Focus
+  - library://playlist/7    # After dark
+```
+
+> _(screenshot coming soon)_
 
 ---
 
