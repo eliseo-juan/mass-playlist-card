@@ -9,7 +9,8 @@ A Lovelace custom card for the **Sections** view of Home Assistant that displays
 
 ## Preview
 
-> _(Screenshots coming soon)_
+<img width="516" height="132" alt="Screenshot 2026-04-01 at 00 50 58" src="https://github.com/user-attachments/assets/3f0b6093-99de-457c-a600-3dcb0850c018" />
+
 
 ---
 
