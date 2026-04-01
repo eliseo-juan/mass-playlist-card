@@ -9,7 +9,8 @@ A Lovelace custom card for the **Sections** view of Home Assistant that displays
 
 ## Preview
 
-<img width="516" height="132" alt="Screenshot 2026-04-01 at 00 50 58" src="https://github.com/user-attachments/assets/3f0b6093-99de-457c-a600-3dcb0850c018" />
+<img width="1327" height="900" alt="image" src="https://github.com/user-attachments/assets/9b4fbb2e-db2a-47d0-9b81-2b1d56204fd4" />
+
 
 
 ---
@@ -31,6 +32,15 @@ One tap. The right vibe.
 
 - [Music Assistant](https://music-assistant.io/) **integration** installed in Home Assistant (not just the add-on)
 - A `media_player` entity provided by Music Assistant
+
+---
+
+## Some more examples
+
+<img width="516" height="132" alt="Screenshot 2026-04-01 at 00 50 58" src="https://github.com/user-attachments/assets/3f0b6093-99de-457c-a600-3dcb0850c018" />
+<img width="538" height="184" alt="image" src="https://github.com/user-attachments/assets/eba771fe-84a0-43a2-bfc9-bb263d1ffea9" />
+<img width="491" height="236" alt="image" src="https://github.com/user-attachments/assets/d864facd-bd21-4d20-9ef5-4e8e183de162" />
+<img width="526" height="237" alt="image" src="https://github.com/user-attachments/assets/a02c0327-a3ec-47a4-8fc7-56e4ba5f0e9c" />
 
 ---
 
