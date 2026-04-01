@@ -17,8 +17,7 @@ Designed specifically for the **Sections view** of Home Assistant.
 
 | File | Purpose |
 |---|---|
-| `dist/mass-coverwall-card.js` | The card — editor + main card in one file |
-| `dist/localize/` | i18n files (en, es, fr, de, it, pt) |
+| `dist/mass-coverwall-card.js` | The card — editor + main card in one file (i18n inlined) |
 | `tests/utils.test.js` | Unit tests for pure exported functions |
 | `hacs.json` | HACS plugin manifest — `filename` must stay `mass-coverwall-card.js` |
 
