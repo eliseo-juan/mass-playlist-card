@@ -1,0 +1,36 @@
+export const fr = {
+  editor_speaker: 'Haut-parleur Music Assistant',
+  editor_content_type: 'Type de contenu',
+  editor_sort_by: 'Trier par',
+  editor_cover_size: 'Taille de pochette (colonnes de grille)',
+  editor_manual_items: 'Éléments manuels (glisser pour réorganiser)',
+
+  type_playlist: 'Listes de lecture',
+  type_album: 'Albums',
+  type_artist: 'Artistes',
+
+  order_timestamp_added_desc: 'Date d\'ajout (plus récent d\'abord)',
+  order_timestamp_added: 'Date d\'ajout (plus ancien d\'abord)',
+  order_last_played_desc: 'Dernière lecture (plus récent d\'abord)',
+  order_last_played: 'Dernière lecture (plus ancien d\'abord)',
+  order_play_count_desc: 'Nombre de lectures (plus élevé d\'abord)',
+  order_play_count: 'Nombre de lectures (plus faible d\'abord)',
+  order_random: 'Aléatoire',
+  order_random_less_played: 'Aléatoire (le moins écouté)',
+  order_name: 'Nom (A → Z)',
+  order_name_desc: 'Nom (Z → A)',
+  order_sort_name: 'Nom de tri (A → Z)',
+  order_sort_name_desc: 'Nom de tri (Z → A)',
+  order_year_desc: 'Année (plus récent d\'abord)',
+  order_year: 'Année (plus ancien d\'abord)',
+  order_artist_name: 'Nom d\'artiste (A → Z)',
+  order_artist_name_desc: 'Nom d\'artiste (Z → A)',
+  order_manual: '— Manuel —',
+
+  state_loading: 'Chargement…',
+  error_instance_not_found: 'Instance Music Assistant introuvable. Vérifiez entity_id.',
+  error_loading_content: 'Erreur lors du chargement du contenu',
+  state_no_items: 'Aucun élément trouvé dans la bibliothèque',
+
+  aria_play: 'Lire'
+};

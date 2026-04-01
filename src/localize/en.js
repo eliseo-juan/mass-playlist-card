@@ -1,0 +1,41 @@
+export const en = {
+  // Editor Labels
+  editor_speaker: 'Music Assistant speaker',
+  editor_content_type: 'Content type',
+  editor_sort_by: 'Sort by',
+  editor_cover_size: 'Cover size (grid columns)',
+  editor_manual_items: 'Manual items (drag to reorder)',
+
+  // Media Types
+  type_playlist: 'Playlists',
+  type_album: 'Albums',
+  type_artist: 'Artists',
+
+  // Order By
+  order_timestamp_added_desc: 'Date added (newest first)',
+  order_timestamp_added: 'Date added (oldest first)',
+  order_last_played_desc: 'Last played (newest first)',
+  order_last_played: 'Last played (oldest first)',
+  order_play_count_desc: 'Play count (highest first)',
+  order_play_count: 'Play count (lowest first)',
+  order_random: 'Random',
+  order_random_less_played: 'Random (least played)',
+  order_name: 'Name (A → Z)',
+  order_name_desc: 'Name (Z → A)',
+  order_sort_name: 'Sort name (A → Z)',
+  order_sort_name_desc: 'Sort name (Z → A)',
+  order_year_desc: 'Year (newest first)',
+  order_year: 'Year (oldest first)',
+  order_artist_name: 'Artist name (A → Z)',
+  order_artist_name_desc: 'Artist name (Z → A)',
+  order_manual: '— Manual —',
+
+  // Card State / Errors
+  state_loading: 'Loading…',
+  error_instance_not_found: 'Music Assistant instance not found. Check entity_id.',
+  error_loading_content: 'Error loading content',
+  state_no_items: 'No items found in library',
+
+  // Accessibility
+  aria_play: 'Play'
+};

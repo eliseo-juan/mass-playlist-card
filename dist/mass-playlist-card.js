@@ -8,34 +8,36 @@
  *      URL: /local/mass-playlist-card.js  |  Type: JavaScript module
  */
 
+import { localize } from './localize/localize.js';
+
 const ROW_HEIGHT = 56;
 const GAP        = 8;
 
 const MEDIA_TYPES = [
-  { value: 'playlist', label: 'Playlists' },
-  { value: 'album',    label: 'Albums'    },
-  { value: 'artist',   label: 'Artists'   },
+  { value: 'playlist', labelKey: 'type_playlist' },
+  { value: 'album',    labelKey: 'type_album'    },
+  { value: 'artist',   labelKey: 'type_artist'   },
 ];
 
 // order_by values exposed by Music Assistant
 const ORDER_BY_OPTIONS = [
-  { value: 'timestamp_added_desc', label: 'Date added (newest first)'        },
-  { value: 'timestamp_added',      label: 'Date added (oldest first)'        },
-  { value: 'last_played_desc',     label: 'Last played (newest first)'       },
-  { value: 'last_played',          label: 'Last played (oldest first)'       },
-  { value: 'play_count_desc',      label: 'Play count (highest first)'       },
-  { value: 'play_count',           label: 'Play count (lowest first)'        },
-  { value: 'random',               label: 'Random'                           },
-  { value: 'random_less_played',   label: 'Random (least played)'            },
-  { value: 'name',                 label: 'Name (A → Z)'                    },
-  { value: 'name_desc',            label: 'Name (Z → A)'                    },
-  { value: 'sort_name',            label: 'Sort name (A → Z)'               },
-  { value: 'sort_name_desc',       label: 'Sort name (Z → A)'               },
-  { value: 'year_desc',            label: 'Year (newest first)'              },
-  { value: 'year',                 label: 'Year (oldest first)'              },
-  { value: 'artist_name',          label: 'Artist name (A → Z)'             },
-  { value: 'artist_name_desc',     label: 'Artist name (Z → A)'             },
-  { value: 'manual',               label: '— Manual —'                       },
+  { value: 'timestamp_added_desc', labelKey: 'order_timestamp_added_desc' },
+  { value: 'timestamp_added',      labelKey: 'order_timestamp_added'      },
+  { value: 'last_played_desc',     labelKey: 'order_last_played_desc'     },
+  { value: 'last_played',          labelKey: 'order_last_played'          },
+  { value: 'play_count_desc',      labelKey: 'order_play_count_desc'      },
+  { value: 'play_count',           labelKey: 'order_play_count'           },
+  { value: 'random',               labelKey: 'order_random'               },
+  { value: 'random_less_played',   labelKey: 'order_random_less_played'   },
+  { value: 'name',                 labelKey: 'order_name'                 },
+  { value: 'name_desc',            labelKey: 'order_name_desc'            },
+  { value: 'sort_name',            labelKey: 'order_sort_name'            },
+  { value: 'sort_name_desc',       labelKey: 'order_sort_name_desc'       },
+  { value: 'year_desc',            labelKey: 'order_year_desc'            },
+  { value: 'year',                 labelKey: 'order_year'                 },
+  { value: 'artist_name',          labelKey: 'order_artist_name'          },
+  { value: 'artist_name_desc',     labelKey: 'order_artist_name_desc'     },
+  { value: 'manual',               labelKey: 'order_manual'               },
 ];
 
 const MANUAL_SLOTS = 12;
@@ -52,8 +54,12 @@ class MassPlaylistCardEditor extends HTMLElement {
   }
 
   set hass(hass) {
+    const oldLang = this._hass?.language;
     this._hass = hass;
     this.shadowRoot.querySelectorAll('ha-entity-picker').forEach(p => p.hass = hass);
+    if (this._hass?.language !== oldLang) {
+      this._renderEditor();
+    }
   }
 
   setConfig(config) {
@@ -77,6 +83,7 @@ class MassPlaylistCardEditor extends HTMLElement {
   _renderEditor() {
     const shadow   = this.shadowRoot;
     const isManual = this._config.order_by === 'manual';
+    const lang     = this._hass?.language || 'en';
 
     shadow.innerHTML = `
       <style>
@@ -178,7 +185,7 @@ class MassPlaylistCardEditor extends HTMLElement {
       <div id="form-host"></div>
 
       ${isManual ? `
-        <div class="section-title">Manual items (drag to reorder)</div>
+        <div class="section-title">${localize('editor_manual_items', lang)}</div>
         <div class="manual-list" id="manual-list">
           ${Array.from({ length: MANUAL_SLOTS }, (_, i) => {
             const uri = this._config.manual_items?.[i] ?? '';
@@ -209,32 +216,32 @@ class MassPlaylistCardEditor extends HTMLElement {
       {
         name:     'entity_id',
         required: true,
-        label:    'Music Assistant speaker',
+        label:    localize('editor_speaker', lang),
         selector: { entity: { domain: 'media_player', integration: 'music_assistant' } },
       },
       {
         name:  'media_type',
-        label: 'Content type',
+        label: localize('editor_content_type', lang),
         selector: {
           select: {
-            options: MEDIA_TYPES.map(t => ({ value: t.value, label: t.label })),
+            options: MEDIA_TYPES.map(t => ({ value: t.value, label: localize(t.labelKey, lang) })),
             mode:    'dropdown',
           },
         },
       },
       {
         name:  'order_by',
-        label: 'Sort by',
+        label: localize('editor_sort_by', lang),
         selector: {
           select: {
-            options: ORDER_BY_OPTIONS.map(o => ({ value: o.value, label: o.label })),
+            options: ORDER_BY_OPTIONS.map(o => ({ value: o.value, label: localize(o.labelKey, lang) })),
             mode:    'dropdown',
           },
         },
       },
       {
         name:  'item_size',
-        label: 'Cover size (grid columns)',
+        label: localize('editor_cover_size', lang),
         selector: { number: { min: 1, max: 12, step: 1, mode: 'box' } },
       },
     ];
@@ -346,9 +353,15 @@ class MassPlaylistCard extends HTMLElement {
   }
 
   set hass(hass) {
+    const oldLang = this._hass?.language;
     const first = !this._hass;
     this._hass  = hass;
-    if (first) { this._render(); this._fetchItems(); }
+    if (first) {
+      this._render();
+      this._fetchItems();
+    } else if (this._hass?.language !== oldLang && this._rendered) {
+      this._updateGrid();
+    }
   }
 
   connectedCallback() {
@@ -383,7 +396,7 @@ class MassPlaylistCard extends HTMLElement {
 
     const configEntryId = this._config.config_entry_id || await this._getConfigEntryId();
     if (!configEntryId) {
-      this._error   = 'Music Assistant instance not found. Check entity_id.';
+      this._error   = localize('error_instance_not_found', this._hass?.language);
       this._loading = false;
       this._updateGrid();
       return;
@@ -406,7 +419,7 @@ class MassPlaylistCard extends HTMLElement {
       const data  = result?.response ?? result;
       this._items = data?.items || (Array.isArray(data) ? data : []);
     } catch (err) {
-      this._error = err.message || 'Error loading content';
+      this._error = err.message || localize('error_loading_content', this._hass?.language);
     }
 
     this._loading = false;
@@ -428,7 +441,7 @@ class MassPlaylistCard extends HTMLElement {
 
     const configEntryId = this._config.config_entry_id || await this._getConfigEntryId();
     if (!configEntryId) {
-      this._error   = 'Music Assistant instance not found. Check entity_id.';
+      this._error   = localize('error_instance_not_found', this._hass?.language);
       this._loading = false;
       this._updateGrid();
       return;
@@ -608,8 +621,10 @@ class MassPlaylistCard extends HTMLElement {
     const root = this.shadowRoot.getElementById('root');
     if (!root) return;
 
+    const lang = this._hass?.language || 'en';
+
     if (this._loading) {
-      root.innerHTML = `<div class="state"><div class="loader"></div>Loading…</div>`;
+      root.innerHTML = `<div class="state"><div class="loader"></div>${localize('state_loading', lang)}</div>`;
       return;
     }
     if (this._error) {
@@ -617,7 +632,7 @@ class MassPlaylistCard extends HTMLElement {
       return;
     }
     if (!this._items.length) {
-      root.innerHTML = `<div class="state">No items found in library</div>`;
+      root.innerHTML = `<div class="state">${localize('state_no_items', lang)}</div>`;
       return;
     }
 
@@ -640,7 +655,7 @@ class MassPlaylistCard extends HTMLElement {
       el.className = 'item';
       el.setAttribute('role', 'button');
       el.setAttribute('tabindex', '0');
-      el.setAttribute('aria-label', `Play ${name}`);
+      el.setAttribute('aria-label', `${localize('aria_play', lang)} ${name}`);
       el.title = name;
 
       if (imgUrl) {
