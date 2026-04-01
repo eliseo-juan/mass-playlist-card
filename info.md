@@ -1,4 +1,4 @@
-# Music Assistant Playlist Card
+# Music Assistant Cover Wall
 
 A Lovelace custom card for the **Sections** view that displays a responsive grid of Music Assistant covers (playlists, albums, or artists) and plays them on tap.
 

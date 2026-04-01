@@ -62,6 +62,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
-            dist/mass-playlist-card.js \
+            dist/mass-coverwall-card.js \
             --title "${{ steps.version.outputs.tag }}" \
             --notes-file changelog.md

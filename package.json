@@ -1,11 +1,11 @@
 {
-  "name": "mass-playlist-card",
+  "name": "mass-coverwall-card",
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "oxlint dist/mass-playlist-card.js tests/"
+    "lint": "oxlint dist/mass-coverwall-card.js tests/"
   },
   "devDependencies": {
     "vitest": "^2.0.0",

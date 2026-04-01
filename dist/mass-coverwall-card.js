@@ -1,11 +1,11 @@
 /**
- * mass-playlist-card — Music Assistant Media Grid Card
+ * mass-coverwall-card — Music Assistant Media Grid Card
  * Designed for the Home Assistant Sections view.
  *
  * Installation:
- *   1. Copy to /config/www/mass-playlist-card.js
+ *   1. Copy to /config/www/mass-coverwall-card.js
  *   2. Settings → Dashboards → Resources → + Add resource
- *      URL: /local/mass-playlist-card.js  |  Type: JavaScript module
+ *      URL: /local/mass-coverwall-card.js  |  Type: JavaScript module
  */
 
 // ─── i18n ─────────────────────────────────────────────────────────────────────
@@ -543,7 +543,7 @@ class MassPlaylistCardEditor extends HTMLElement {
   }
 }
 
-customElements.define('mass-playlist-card-editor', MassPlaylistCardEditor);
+customElements.define('mass-coverwall-card-editor', MassPlaylistCardEditor);
 
 // ─── Main Card ────────────────────────────────────────────────────────────────
 
@@ -563,7 +563,7 @@ class MassPlaylistCard extends HTMLElement {
     this._containerH     = 0;
   }
 
-  static getConfigElement() { return document.createElement('mass-playlist-card-editor'); }
+  static getConfigElement() { return document.createElement('mass-coverwall-card-editor'); }
   static getStubConfig()    { return { entity_id: '', media_type: 'playlist', order_by: 'timestamp_added_desc', item_size: 3 }; }
 
   getGridOptions() {
@@ -571,7 +571,7 @@ class MassPlaylistCard extends HTMLElement {
   }
 
   setConfig(config) {
-    if (!config.entity_id) throw new Error('mass-playlist-card: entity_id is required');
+    if (!config.entity_id) throw new Error('mass-coverwall-card: entity_id is required');
     this._config = {
       media_type:   'playlist',
       order_by:     'timestamp_added_desc',
@@ -905,12 +905,12 @@ class MassPlaylistCard extends HTMLElement {
   getCardSize() { return 2; }
 }
 
-customElements.define('mass-playlist-card', MassPlaylistCard);
+customElements.define('mass-coverwall-card', MassPlaylistCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type:        'mass-playlist-card',
-  name:        'Music Assistant Playlist Card',
-  description: 'Music Assistant cover grid for Sections view (playlists, albums, artists)',
+  type:        'mass-coverwall-card',
+  name:        'Music Assistant Cover Wall',
+  description: 'Music Assistant cover wall for Home Assistant Sections — playlists, albums & artists',
   preview:     false,
 });

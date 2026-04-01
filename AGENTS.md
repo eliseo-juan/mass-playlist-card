@@ -2,13 +2,13 @@
 
 ## What this project is
 
-`mass-playlist-card` is a single-file vanilla JS Lovelace custom card for Home Assistant.
+`mass-coverwall-card` is a single-file vanilla JS Lovelace custom card for Home Assistant.
 It displays a responsive grid of Music Assistant covers (playlists, albums, artists) and plays them on tap.
 Designed specifically for the **Sections view** of Home Assistant.
 
 ## Architecture
 
-- **No build step.** The source and the distributed file are the same thing: `dist/mass-playlist-card.js`.
+- **No build step.** The source and the distributed file are the same thing: `dist/mass-coverwall-card.js`.
 - **No framework.** Plain custom elements (`HTMLElement`), Shadow DOM, `ResizeObserver`.
 - **No external dependencies.** Only HA built-ins (`ha-form`, `ha-entity-picker`) and the MA WebSocket API.
 - `src/` does not exist — `dist/` is the source of truth.
@@ -17,10 +17,10 @@ Designed specifically for the **Sections view** of Home Assistant.
 
 | File | Purpose |
 |---|---|
-| `dist/mass-playlist-card.js` | The card — editor + main card in one file |
+| `dist/mass-coverwall-card.js` | The card — editor + main card in one file |
 | `dist/localize/` | i18n files (en, es, fr, de, it, pt) |
 | `tests/utils.test.js` | Unit tests for pure exported functions |
-| `hacs.json` | HACS plugin manifest — `filename` must stay `mass-playlist-card.js` |
+| `hacs.json` | HACS plugin manifest — `filename` must stay `mass-coverwall-card.js` |
 
 ## Exported pure functions (testable)
 

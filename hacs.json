@@ -1,6 +1,6 @@
 {
-  "name": "Music Assistant Playlist Card",
+  "name": "Music Assistant Cover Wall",
   "render_readme": true,
-  "filename": "mass-playlist-card.js",
+  "filename": "mass-coverwall-card.js",
   "content_in_root": false
 }

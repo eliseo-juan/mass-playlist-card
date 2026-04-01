@@ -1,4 +1,4 @@
-# mass-playlist-card
+# mass-coverwall-card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -40,16 +40,16 @@ One tap. The right vibe.
 
 1. Open HACS in your Home Assistant instance.
 2. Go to **Frontend** → click the three-dot menu → **Custom repositories**.
-3. Add `https://github.com/eliseo-juan/mass-playlist-card` with category **Lovelace**.
-4. Search for **Music Assistant Playlist Card** and install it.
+3. Add `https://github.com/eliseo-juan/mass-coverwall-card` with category **Lovelace**.
+4. Search for **Music Assistant Cover Wall** and install it.
 5. Reload your browser.
 
 ### Manual
 
-1. Download `dist/mass-playlist-card.js` from the [latest release](https://github.com/eliseo-juan/mass-playlist-card/releases).
-2. Copy the file to `/config/www/mass-playlist-card.js`.
+1. Download `dist/mass-coverwall-card.js` from the [latest release](https://github.com/eliseo-juan/mass-coverwall-card/releases).
+2. Copy the file to `/config/www/mass-coverwall-card.js`.
 3. Go to **Settings → Dashboards → Resources → Add resource**:
-   - URL: `/local/mass-playlist-card.js`
+   - URL: `/local/mass-coverwall-card.js`
    - Type: `JavaScript module`
 4. Reload your browser.
 
@@ -62,14 +62,14 @@ Add the card via the visual editor or paste the YAML directly.
 ### Minimal
 
 ```yaml
-type: custom:mass-playlist-card
+type: custom:mass-coverwall-card
 entity_id: media_player.salon
 ```
 
 ### Full example
 
 ```yaml
-type: custom:mass-playlist-card
+type: custom:mass-coverwall-card
 entity_id: media_player.salon
 media_type: playlist          # playlist | album | artist
 order_by: timestamp_added_desc
@@ -79,7 +79,7 @@ item_size: 3                  # grid columns per cover (Sections grid = 12 cols)
 ### Manual mode example
 
 ```yaml
-type: custom:mass-playlist-card
+type: custom:mass-coverwall-card
 entity_id: media_player.salon
 media_type: playlist
 order_by: manual
@@ -134,7 +134,7 @@ manual_items:
 Show your latest additions across the full dashboard width.
 
 ```yaml
-type: custom:mass-playlist-card
+type: custom:mass-coverwall-card
 entity_id: media_player.salon
 media_type: playlist
 order_by: timestamp_added_desc
@@ -150,7 +150,7 @@ item_size: 3
 A tight grid of your newest albums, smaller covers for a denser look.
 
 ```yaml
-type: custom:mass-playlist-card
+type: custom:mass-coverwall-card
 entity_id: media_player.salon
 media_type: album
 order_by: year_desc
@@ -166,7 +166,7 @@ item_size: 2
 Always there, always in the right order. The ones you actually reach for.
 
 ```yaml
-type: custom:mass-playlist-card
+type: custom:mass-coverwall-card
 entity_id: media_player.salon
 media_type: playlist
 order_by: manual
