@@ -267,6 +267,7 @@ class MassPlaylistCardEditor extends HTMLElement {
 
       // ── Drag & drop to reorder ──
       const list = shadow.getElementById('manual-list');
+      const slots = list.querySelectorAll('.slot');
 
       list.addEventListener('dragstart', (e) => {
         const slot = e.target.closest('.slot');
@@ -279,18 +280,18 @@ class MassPlaylistCardEditor extends HTMLElement {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
         const slot = e.target.closest('.slot');
-        list.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+        slots.forEach(s => s.classList.remove('drag-over'));
         if (slot) slot.classList.add('drag-over');
       });
 
       list.addEventListener('dragleave', () => {
-        list.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+        slots.forEach(s => s.classList.remove('drag-over'));
       });
 
       list.addEventListener('drop', (e) => {
         e.preventDefault();
         const slot = e.target.closest('.slot');
-        list.querySelectorAll('.slot').forEach(s => s.classList.remove('drag-over'));
+        slots.forEach(s => s.classList.remove('drag-over'));
         if (!slot || this._dragSrcIdx === null) return;
         const destIdx = parseInt(slot.dataset.idx);
         if (destIdx === this._dragSrcIdx) return;
