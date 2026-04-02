@@ -1,0 +1,45 @@
+name: Beta release
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  beta:
+    name: Publish beta
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Delete existing beta release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete beta --yes 2>/dev/null || true
+          git push origin :refs/tags/beta 2>/dev/null || true
+
+      - name: Create beta release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create beta \
+            dist/mass-coverwall-card.js \
+            --title "Beta ($(git log -1 --format='%h') — ${{ github.ref_name }})" \
+            --notes "Automated beta build from branch \`${{ github.ref_name }}\`.
+
+          ⚠️ This is a pre-release. To install in HACS, enable **Show beta versions** for this repository." \
+            --prerelease

@@ -2,29 +2,56 @@
 
 ## What this project is
 
-`mass-coverwall-card` is a single-file vanilla JS Lovelace custom card for Home Assistant.
+`mass-coverwall-card` is a vanilla JS Lovelace custom card for Home Assistant.
 It displays a responsive grid of Music Assistant covers (playlists, albums, artists) and plays them on tap.
 Designed specifically for the **Sections view** of Home Assistant.
 
 ## Architecture
 
-- **No build step.** The source and the distributed file are the same thing: `dist/mass-coverwall-card.js`.
+- **Build step:** Vite bundles `src/` into `dist/mass-coverwall-card.js`.
+- **`src/` is the source of truth.** `dist/` is generated and not tracked in git.
 - **No framework.** Plain custom elements (`HTMLElement`), Shadow DOM, `ResizeObserver`.
-- **No external dependencies.** Only HA built-ins (`ha-form`, `ha-entity-picker`) and the MA WebSocket API.
-- `src/` does not exist — `dist/` is the source of truth.
+- **No external runtime dependencies.** Only HA built-ins (`ha-form`, `ha-entity-picker`) and the MA WebSocket API.
+- **Translations** live in `.translations/` as one JSON file per language.
 
 ## Key files
 
 | File | Purpose |
 |---|---|
-| `dist/mass-coverwall-card.js` | The card — editor + main card in one file (i18n inlined) |
-| `tests/utils.test.js` | Unit tests for pure exported functions |
+| `src/constants.js` | ROW_HEIGHT, GAP, MANUAL_SLOTS, MEDIA_TYPES, ORDER_BY_OPTIONS |
+| `src/localize.js` | localize() function, imports JSON files from .translations/ |
+| `src/utils.js` | Pure exported functions: calcCols, calcRows, calcItemWidth, getImageUrl, getUri, getName |
+| `src/layout.js` | _lastDetectedLayout, detectLayout(), setLastDetectedLayout() |
+| `src/editor.js` | MassPlaylistCardEditor class + customElements.define |
+| `src/card.js` | MassPlaylistCard class + customElements.define |
+| `src/index.js` | Entry point: imports card.js + editor.js, window.customCards push |
+| `.translations/en.json` | English translations |
+| `.translations/es.json` | Spanish translations |
+| `.translations/fr.json` | French translations |
+| `.translations/de.json` | German translations |
+| `.translations/it.json` | Italian translations |
+| `.translations/pt.json` | Portuguese translations |
+| `vite.config.js` | Vite build configuration |
+| `src/__tests__/utils.test.js` | Unit tests for pure exported functions |
+| `src/__tests__/localize.test.js` | Tests for localize() across all 6 languages |
+| `src/__tests__/layout.test.js` | Tests for detectLayout() and setLastDetectedLayout() |
+| `src/__tests__/card.test.js` | Tests for MassPlaylistCard config/data logic |
+| `src/__tests__/editor.test.js` | Tests for MassPlaylistCardEditor config normalization and events |
+| `src/__tests__/setup.js` | Vitest global setup — mocks ResizeObserver, registers stub HA elements |
+| `src/__tests__/mockData.js` | Factory helpers: createMockHass, createMockConfig, createMockItem |
 | `hacs.json` | HACS plugin manifest — `filename` must stay `mass-coverwall-card.js` |
+
+## Build commands
+
+```bash
+npm run build     # Vite production build → dist/mass-coverwall-card.js
+npm run dev       # Vite watch mode (rebuilds on changes)
+```
 
 ## Exported pure functions (testable)
 
-`calcCols`, `calcRows`, `getImageUrl`, `getUri`, `getName` are exported from the card file.
-All business logic changes to these functions **must** be covered by tests in `tests/utils.test.js`.
+`calcCols`, `calcRows`, `getImageUrl`, `getUri`, `getName` are exported from `src/utils.js`.
+All business logic changes to these functions **must** be covered by tests in `src/__tests__/utils.test.js`.
 
 ## Layout constants
 
@@ -42,20 +69,34 @@ All business logic changes to these functions **must** be covered by tests in `t
 ## Running tests and lint
 
 ```bash
-npm test          # vitest run (41 tests)
-npm run lint      # oxlint
+npm test              # vitest run (all tests in src/__tests__/)
+npm run test:watch    # vitest watch mode (re-runs on file changes)
+npm run test:coverage # vitest run --coverage (v8 coverage report)
+npm run lint          # oxlint on src/
 ```
+
+### Test infrastructure
+
+- Tests live in `src/__tests__/` (co-located with source)
+- `src/__tests__/setup.js` — global setup: mocks ResizeObserver, registers stub HA elements (ha-form, ha-entity-picker, ha-card), adds flushPromises helper
+- `src/__tests__/mockData.js` — factory helpers: createMockHass(), createMockConfig(), createMockItem()
+- Environment: jsdom (via the `jsdom` devDependency)
+- Coverage: v8 provider, reports in text/json/html formats
 
 ## CI checks required to merge to main
 
 - **Validate HACS** — validates `hacs.json` and repo structure
-- **Lint** — oxlint on `dist/` and `tests/`
-- **Test** — vitest unit tests
+- **Lint** — oxlint on `src/` and `tests/` (after build)
+- **Test** — vitest unit tests (after build)
+
+Both CI jobs (lint and test) run `npm run build` before their respective checks.
+The release workflow also runs a build before creating the GitHub release.
 
 ## What NOT to do
 
-- Do not create a `src/` directory — `dist/` is the source of truth.
-- Do not add a build step or bundler without explicit request.
+- Do not edit `dist/` directly — it is generated by `npm run build`.
 - Do not add external npm runtime dependencies — only devDependencies are allowed.
 - Do not modify `hacs.json` filename field — HACS depends on it.
 - Do not skip tests when changing `calcCols`, `calcRows`, `getImageUrl`, `getUri`, or `getName`.
+- Do not move tests back to `tests/` — they now live in `src/__tests__/`.
+- Do not add TypeScript — this project uses vanilla JS only.

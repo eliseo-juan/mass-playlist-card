@@ -12,7 +12,10 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Dependencies (if a build step is added later)
+# Build output
+dist/
+
+# Dependencies
 node_modules/
 
 # Environment
