@@ -12,11 +12,12 @@
 
 const TRANSLATIONS = {
   en: {
-    editor_speaker:       'Music Assistant speaker',
+    editor_speaker:       'Speakers',
     editor_content_type:  'Content type',
     editor_sort_by:       'Sort by',
-    editor_cover_size:    'Cover size (grid columns)',
-    editor_manual_items:  'Manual items (drag to reorder)',
+    editor_cover_size:    'Cover size (grid columns) 🔥',
+    editor_manual_items:        'Manual items (drag to reorder)',
+
     type_playlist:        'Playlists',
     type_album:           'Albums',
     type_artist:          'Artists',
@@ -44,11 +45,12 @@ const TRANSLATIONS = {
     aria_play:                   'Play',
   },
   es: {
-    editor_speaker:       'Altavoz Music Assistant',
+    editor_speaker:       'Altavoces',
     editor_content_type:  'Tipo de contenido',
     editor_sort_by:       'Ordenar por',
     editor_cover_size:    'Tamaño de portada (columnas de cuadrícula)',
-    editor_manual_items:  'Elementos manuales (arrastrar para reordenar)',
+    editor_manual_items:        'Elementos manuales (arrastrar para reordenar)',
+
     type_playlist:        'Listas de reproducción',
     type_album:           'Álbumes',
     type_artist:          'Artistas',
@@ -76,11 +78,12 @@ const TRANSLATIONS = {
     aria_play:                   'Reproducir',
   },
   fr: {
-    editor_speaker:       'Haut-parleur Music Assistant',
+    editor_speaker:       'Enceintes',
     editor_content_type:  'Type de contenu',
     editor_sort_by:       'Trier par',
     editor_cover_size:    'Taille de pochette (colonnes de grille)',
-    editor_manual_items:  'Éléments manuels (glisser pour réorganiser)',
+    editor_manual_items:        'Éléments manuels (glisser pour réorganiser)',
+
     type_playlist:        'Listes de lecture',
     type_album:           'Albums',
     type_artist:          'Artistes',
@@ -108,11 +111,12 @@ const TRANSLATIONS = {
     aria_play:                   'Lire',
   },
   de: {
-    editor_speaker:       'Music Assistant Lautsprecher',
+    editor_speaker:       'Lautsprecher',
     editor_content_type:  'Inhaltstyp',
     editor_sort_by:       'Sortieren nach',
     editor_cover_size:    'Cover-Größe (Rasterspalten)',
-    editor_manual_items:  'Manuelle Elemente (zum Neuanordnen ziehen)',
+    editor_manual_items:        'Manuelle Elemente (zum Neuanordnen ziehen)',
+
     type_playlist:        'Playlists',
     type_album:           'Alben',
     type_artist:          'Künstler',
@@ -140,11 +144,12 @@ const TRANSLATIONS = {
     aria_play:                   'Abspielen',
   },
   it: {
-    editor_speaker:       'Altoparlante Music Assistant',
+    editor_speaker:       'Altoparlanti',
     editor_content_type:  'Tipo di contenuto',
     editor_sort_by:       'Ordina per',
     editor_cover_size:    'Dimensione copertina (colonne griglia)',
-    editor_manual_items:  'Elementi manuali (trascina per riordinare)',
+    editor_manual_items:        'Elementi manuali (trascina per riordinare)',
+
     type_playlist:        'Playlist',
     type_album:           'Album',
     type_artist:          'Artisti',
@@ -172,11 +177,12 @@ const TRANSLATIONS = {
     aria_play:                   'Riproduci',
   },
   pt: {
-    editor_speaker:       'Alto-falante Music Assistant',
+    editor_speaker:       'Alto-falantes',
     editor_content_type:  'Tipo de conteúdo',
     editor_sort_by:       'Ordenar por',
     editor_cover_size:    'Tamanho da capa (colunas da grade)',
-    editor_manual_items:  'Itens manuais (arraste para reordenar)',
+    editor_manual_items:        'Itens manuais (arraste para reordenar)',
+
     type_playlist:        'Playlists',
     type_album:           'Álbuns',
     type_artist:          'Artistas',
@@ -292,12 +298,16 @@ class MassPlaylistCardEditor extends HTMLElement {
   }
 
   setConfig(config) {
+    const rawId   = config.entity_id;
+    const entityId = Array.isArray(rawId) ? rawId : (rawId ? [rawId] : []);
+    const legacy   = (config.entity_ids ?? []).filter(e => e && !entityId.includes(e));
     this._config = {
       media_type:   'playlist',
       order_by:     'timestamp_added_desc',
       item_size:    3,
       manual_items: [],
       ...config,
+      entity_id: [...entityId, ...legacy].filter(Boolean),
     };
     this._renderEditor();
   }
@@ -446,7 +456,7 @@ class MassPlaylistCardEditor extends HTMLElement {
         name:     'entity_id',
         required: true,
         label:    localize('editor_speaker', lang),
-        selector: { entity: { domain: 'media_player', integration: 'music_assistant' } },
+        selector: { entity: { domain: 'media_player', integration: 'music_assistant', multiple: true } },
       },
       {
         name:  'media_type',
@@ -474,11 +484,12 @@ class MassPlaylistCardEditor extends HTMLElement {
         selector: { number: { min: 1, max: 12, step: 1, mode: 'box' } },
       },
     ];
-    form.data         = this._config;
+    form.data = { ...this._config };
     form.computeLabel = (s) => s.label ?? s.name;
 
     form.addEventListener('value-changed', (e) => {
-      const newConfig = { ...this._config, ...e.detail.value };
+      const val       = { ...e.detail.value };
+      const newConfig = { ...this._config, ...val };
       if (newConfig.order_by === 'manual' && !newConfig.manual_items?.length) {
         newConfig.manual_items = Array(MANUAL_SLOTS).fill('');
       }
@@ -564,7 +575,7 @@ class MassPlaylistCard extends HTMLElement {
   }
 
   static getConfigElement() { return document.createElement('mass-coverwall-card-editor'); }
-  static getStubConfig()    { return { entity_id: '', media_type: 'playlist', order_by: 'timestamp_added_desc', item_size: 3 }; }
+  static getStubConfig()    { return { entity_id: [], media_type: 'playlist', order_by: 'timestamp_added_desc', item_size: 3 }; }
 
   getGridOptions() {
     return { columns: 12, rows: 2, min_columns: 3, min_rows: 1, max_columns: 12 };
@@ -572,14 +583,26 @@ class MassPlaylistCard extends HTMLElement {
 
   setConfig(config) {
     if (!config.entity_id) throw new Error('mass-coverwall-card: entity_id is required');
+    // Backward compat: entity_id used to be a string, now it's an array
+    const entityId = Array.isArray(config.entity_id)
+      ? config.entity_id
+      : [config.entity_id];
+    // Migrate legacy entity_ids into entity_id array
+    const legacy = (config.entity_ids ?? []).filter(e => e && !entityId.includes(e));
     this._config = {
       media_type:   'playlist',
       order_by:     'timestamp_added_desc',
       item_size:    3,
       manual_items: [],
       ...config,
+      entity_id: [...entityId, ...legacy].filter(Boolean),
     };
     if (this._rendered) this._fetchItems();
+  }
+
+  // Returns all entities to play on
+  _getEntities() {
+    return (this._config.entity_id ?? []).filter(e => e && e.trim());
   }
 
   set hass(hass) {
@@ -606,7 +629,8 @@ class MassPlaylistCard extends HTMLElement {
     if (this._configEntryId) return this._configEntryId;
     try {
       const entries = await this._hass.callWS({ type: 'config/entity_registry/list' });
-      const entry   = entries.find(e => e.entity_id === this._config.entity_id);
+      const primaryId = Array.isArray(this._config.entity_id) ? this._config.entity_id[0] : this._config.entity_id;
+      const entry   = entries.find(e => e.entity_id === primaryId);
       if (entry?.config_entry_id) this._configEntryId = entry.config_entry_id;
     } catch (_) { /* silent — config_entry_id may be provided manually */ }
     return this._configEntryId;
@@ -714,22 +738,27 @@ class MassPlaylistCard extends HTMLElement {
   _getName(item)     { return getName(item); }
 
   async _play(item) {
-    const uri = this._getUri(item);
-    if (!uri) return;
-    try {
-      await this._hass.callService('music_assistant', 'play_media', {
-        entity_id:  this._config.entity_id,
-        media_id:   uri,
-        media_type: this._config.media_type || 'playlist',
-        enqueue:    'play',
-      });
-    } catch {
-      // Fallback to standard media_player service
-      await this._hass.callService('media_player', 'play_media', {
-        entity_id:          this._config.entity_id,
-        media_content_id:   uri,
-        media_content_type: this._config.media_type || 'playlist',
-      });
+    const uri      = this._getUri(item);
+    const entities = this._getEntities();
+    if (!uri || !entities.length) return;
+
+    for (const entityId of entities) {
+      try {
+        await this._hass.callService('music_assistant', 'play_media', {
+          entity_id:  entityId,
+          media_id:   uri,
+          media_type: this._config.media_type || 'playlist',
+          enqueue:    'play',
+        });
+      } catch {
+        try {
+          await this._hass.callService('media_player', 'play_media', {
+            entity_id:          entityId,
+            media_content_id:   uri,
+            media_content_type: this._config.media_type || 'playlist',
+          });
+        } catch { /* skip unreachable entity */ }
+      }
     }
   }
 

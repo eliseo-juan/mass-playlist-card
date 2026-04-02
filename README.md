@@ -18,7 +18,7 @@ A Lovelace custom card for the **Sections** view of Home Assistant that displays
 ## Features
 
 - 🎵 **Playlists, albums or artists** — choose what you want to browse
-- 🔊 **Pick your speaker** — any Music Assistant media player in your home
+- 🔊 **Pick your speakers** — one or more Music Assistant media players for instant multiroom
 - 🎛️ **Sort your way** — 16 options: recently added, last played, most played, random, alphabetical…
 - 📌 **Manual mode** — pin exactly the covers you want, drag to reorder
 - 🎨 **Fits your theme** — 100% aligned with your Home Assistant visual style
@@ -80,7 +80,9 @@ entity_id: media_player.salon
 
 ```yaml
 type: custom:mass-coverwall-card
-entity_id: media_player.salon
+entity_id:
+  - media_player.salon
+  - media_player.cocina
 media_type: playlist          # playlist | album | artist
 order_by: timestamp_added_desc
 item_size: 3                  # grid columns per cover (Sections grid = 12 cols)
@@ -106,7 +108,7 @@ manual_items:
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `entity_id` | `string` | **required** | Music Assistant `media_player` entity |
+| `entity_id` | `string` or `list` | **required** | One or more Music Assistant `media_player` entities. The first one is used to detect the MA instance. Supports multiroom out of the box. |
 | `media_type` | `string` | `playlist` | Content type: `playlist`, `album`, or `artist` |
 | `order_by` | `string` | `timestamp_added_desc` | Sort order (see table below) |
 | `item_size` | `number` | `3` | Width of each cover in Sections grid columns (1–12) |
@@ -165,6 +167,25 @@ entity_id: media_player.salon
 media_type: album
 order_by: year_desc
 item_size: 2
+```
+
+> _(screenshot coming soon)_
+
+---
+
+### Multiroom — one tap, whole house
+
+Tap a cover and every room plays in sync.
+
+```yaml
+type: custom:mass-coverwall-card
+entity_id:
+  - media_player.salon
+  - media_player.cocina
+  - media_player.habitacion
+media_type: playlist
+order_by: last_played_desc
+item_size: 3
 ```
 
 > _(screenshot coming soon)_
