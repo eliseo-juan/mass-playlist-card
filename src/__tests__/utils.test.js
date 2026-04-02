@@ -5,7 +5,7 @@ import {
   getImageUrl,
   getUri,
   getName,
-} from '../src/utils.js';
+} from '../utils.js';
 
 // ROW_HEIGHT matches the constant in the card implementation
 const ROW_HEIGHT = 56;

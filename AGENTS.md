@@ -32,7 +32,13 @@ Designed specifically for the **Sections view** of Home Assistant.
 | `.translations/it.json` | Italian translations |
 | `.translations/pt.json` | Portuguese translations |
 | `vite.config.js` | Vite build configuration |
-| `tests/utils.test.js` | Unit tests for pure exported functions (imports from src/utils.js) |
+| `src/__tests__/utils.test.js` | Unit tests for pure exported functions |
+| `src/__tests__/localize.test.js` | Tests for localize() across all 6 languages |
+| `src/__tests__/layout.test.js` | Tests for detectLayout() and setLastDetectedLayout() |
+| `src/__tests__/card.test.js` | Tests for MassPlaylistCard config/data logic |
+| `src/__tests__/editor.test.js` | Tests for MassPlaylistCardEditor config normalization and events |
+| `src/__tests__/setup.js` | Vitest global setup — mocks ResizeObserver, registers stub HA elements |
+| `src/__tests__/mockData.js` | Factory helpers: createMockHass, createMockConfig, createMockItem |
 | `hacs.json` | HACS plugin manifest — `filename` must stay `mass-coverwall-card.js` |
 
 ## Build commands
@@ -45,7 +51,7 @@ npm run dev       # Vite watch mode (rebuilds on changes)
 ## Exported pure functions (testable)
 
 `calcCols`, `calcRows`, `getImageUrl`, `getUri`, `getName` are exported from `src/utils.js`.
-All business logic changes to these functions **must** be covered by tests in `tests/utils.test.js`.
+All business logic changes to these functions **must** be covered by tests in `src/__tests__/utils.test.js`.
 
 ## Layout constants
 
@@ -63,9 +69,19 @@ All business logic changes to these functions **must** be covered by tests in `t
 ## Running tests and lint
 
 ```bash
-npm test          # vitest run (41 tests)
-npm run lint      # oxlint on src/ and tests/
+npm test              # vitest run (all tests in src/__tests__/)
+npm run test:watch    # vitest watch mode (re-runs on file changes)
+npm run test:coverage # vitest run --coverage (v8 coverage report)
+npm run lint          # oxlint on src/
 ```
+
+### Test infrastructure
+
+- Tests live in `src/__tests__/` (co-located with source)
+- `src/__tests__/setup.js` — global setup: mocks ResizeObserver, registers stub HA elements (ha-form, ha-entity-picker, ha-card), adds flushPromises helper
+- `src/__tests__/mockData.js` — factory helpers: createMockHass(), createMockConfig(), createMockItem()
+- Environment: jsdom (via the `jsdom` devDependency)
+- Coverage: v8 provider, reports in text/json/html formats
 
 ## CI checks required to merge to main
 
@@ -82,4 +98,5 @@ The release workflow also runs a build before creating the GitHub release.
 - Do not add external npm runtime dependencies — only devDependencies are allowed.
 - Do not modify `hacs.json` filename field — HACS depends on it.
 - Do not skip tests when changing `calcCols`, `calcRows`, `getImageUrl`, `getUri`, or `getName`.
+- Do not move tests back to `tests/` — they now live in `src/__tests__/`.
 - Do not add TypeScript — this project uses vanilla JS only.
