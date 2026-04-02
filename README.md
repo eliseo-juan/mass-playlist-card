@@ -112,6 +112,7 @@ manual_items:
 | `media_type` | `string` | `playlist` | Content type: `playlist`, `album`, or `artist` |
 | `order_by` | `string` | `timestamp_added_desc` | Sort order (see table below) |
 | `item_size` | `number` | `3` | Width of each cover in Sections grid columns (1–12) |
+| `rows` | `number` | _(auto)_ | Number of rows to display. **Required for Masonry dashboards.** Leave unset in Sections — the card auto-fits to the card height. |
 | `manual_items` | `list` | `[]` | List of Music Assistant URIs (only used when `order_by: manual`) |
 | `config_entry_id` | `string` | _(auto-detected)_ | Override the Music Assistant config entry ID |
 
