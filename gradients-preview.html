@@ -86,15 +86,27 @@
       overflow: hidden;
     }
 
-    /* ── 8 OKLCH gradients (índice 0-7, elegido por hash del nombre) ── */
-    .g0 { background: linear-gradient(in oklch to bottom right, #e63946, #f9a11b); } /* Sunrise    */
-    .g1 { background: linear-gradient(in oklch to top right,    #4361ee, #06d6a0); } /* Lagoon     */
-    .g2 { background: linear-gradient(in oklch to bottom left,  #f72585, #4cc9f0); } /* Cotton     */
-    .g3 { background: linear-gradient(in oklch to top left,     #2dc653, #e040fb); } /* Alien      */
-    .g4 { background: linear-gradient(in oklch to bottom right, #ff6b00, #7209b7); } /* Blaze      */
-    .g5 { background: linear-gradient(in oklch to top right,    #00b4d8, #d00000); } /* Storm      */
-    .g6 { background: linear-gradient(in oklch to bottom left,  #aacc00, #0077b6); } /* Acid Ocean */
-    .g7 { background: linear-gradient(in oklch to top left,     #ff006e, #3a86ff); } /* Neon       */
+    /* ── 8 gradients — fallback sRGB + enhanced OKLCH ── */
+    .g0 { background: linear-gradient(to bottom right, #e63946, #f9a11b); }
+    .g1 { background: linear-gradient(to top right,    #4361ee, #06d6a0); }
+    .g2 { background: linear-gradient(to bottom left,  #f72585, #4cc9f0); }
+    .g3 { background: linear-gradient(to top left,     #2dc653, #e040fb); }
+    .g4 { background: linear-gradient(to bottom right, #ff6b00, #7209b7); }
+    .g5 { background: linear-gradient(to top right,    #00b4d8, #d00000); }
+    .g6 { background: linear-gradient(to bottom left,  #aacc00, #0077b6); }
+    .g7 { background: linear-gradient(to top left,     #ff006e, #3a86ff); }
+
+    /* OKLCH override — navegadores modernos: Chrome 111+, FF 113+, Safari 16.2+ */
+    @supports (background: linear-gradient(in oklch, red, blue)) {
+      .g0 { background: linear-gradient(in oklch to bottom right, #e63946, #f9a11b); }
+      .g1 { background: linear-gradient(in oklch to top right,    #4361ee, #06d6a0); }
+      .g2 { background: linear-gradient(in oklch to bottom left,  #f72585, #4cc9f0); }
+      .g3 { background: linear-gradient(in oklch to top left,     #2dc653, #e040fb); }
+      .g4 { background: linear-gradient(in oklch to bottom right, #ff6b00, #7209b7); }
+      .g5 { background: linear-gradient(in oklch to top right,    #00b4d8, #d00000); }
+      .g6 { background: linear-gradient(in oklch to bottom left,  #aacc00, #0077b6); }
+      .g7 { background: linear-gradient(in oklch to top left,     #ff006e, #3a86ff); }
+    }
 
     /* ── Divider ── */
     .divider {
