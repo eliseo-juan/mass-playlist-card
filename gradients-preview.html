@@ -14,10 +14,9 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       flex-direction: column;
-      gap: 48px;
+      gap: 40px;
     }
 
-    /* ── Page header ── */
     .page-title {
       color: rgba(255,255,255,.35);
       font-size: 11px;
@@ -26,67 +25,52 @@
       text-transform: uppercase;
     }
 
-    /* ── Section (one per font size) ── */
-    .section { display: flex; flex-direction: column; gap: 12px; }
+    .section { display: flex; flex-direction: column; gap: 10px; }
 
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-    }
-
-    .size-label {
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .token-label {
-      font-family: 'SFMono-Regular', Consolas, monospace;
-      font-size: 10px;
-      color: rgba(255,255,255,.3);
-    }
+    .section-header { display: flex; align-items: baseline; gap: 10px; }
+    .size-label  { color: #fff; font-size: 13px; font-weight: 700; }
+    .token-label { font-family: monospace; font-size: 10px; color: rgba(255,255,255,.28); }
 
     .row { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    /* ── Card ── */
+    .divider { height: 1px; background: rgba(255,255,255,.07); margin: 8px 0; }
+
+    /* Card base */
     .card {
       width: 140px;
       height: 140px;
       border-radius: 12px;
       position: relative;
       overflow: hidden;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(0,0,0,.55);
       flex-shrink: 0;
-      transition: transform .12s ease, filter .15s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,.5);
     }
-    .card:hover  { transform: scale(1.04); filter: brightness(1.08); }
-    .card:active { transform: scale(0.96); }
 
-    /* ── Text overlay ── */
+    /* Text overlay — starts from bottom, bold, max 3 lines */
     .name {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      padding: 36px 10px 10px;
+      padding: 40px 10px 10px;
       background: linear-gradient(to top, rgba(0,0,0,.72) 0%, transparent 100%);
-
-      /* Typography — controlled per section via CSS variable */
-      font-size: var(--fs);
       font-weight: 700;
-      line-height: 1.3;
       color: #fff;
+      line-height: 1.3;
       text-align: left;
       text-shadow: 0 1px 3px rgba(0,0,0,.4);
-
-      /* Max 3 lines */
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    /* ── 8 gradients — fallback sRGB + enhanced OKLCH ── */
+    /* ── Font sizes ── */
+    .fs-10 { font-size: 10px; }
+    .fs-11 { font-size: 11px; }
+    .fs-12 { font-size: 12px; }
+    .fs-13 { font-size: 13px; }
+    .fs-14 { font-size: 14px; }
+
+    /* ── 8 gradients — sRGB fallback + OKLCH enhancement ── */
     .g0 { background: linear-gradient(to bottom right, #e63946, #f9a11b); }
     .g1 { background: linear-gradient(to top right,    #4361ee, #06d6a0); }
     .g2 { background: linear-gradient(to bottom left,  #f72585, #4cc9f0); }
@@ -96,7 +80,6 @@
     .g6 { background: linear-gradient(to bottom left,  #aacc00, #0077b6); }
     .g7 { background: linear-gradient(to top left,     #ff006e, #3a86ff); }
 
-    /* OKLCH override — navegadores modernos: Chrome 111+, FF 113+, Safari 16.2+ */
     @supports (background: linear-gradient(in oklch, red, blue)) {
       .g0 { background: linear-gradient(in oklch to bottom right, #e63946, #f9a11b); }
       .g1 { background: linear-gradient(in oklch to top right,    #4361ee, #06d6a0); }
@@ -107,81 +90,94 @@
       .g6 { background: linear-gradient(in oklch to bottom left,  #aacc00, #0077b6); }
       .g7 { background: linear-gradient(in oklch to top left,     #ff006e, #3a86ff); }
     }
-
-    /* ── Divider ── */
-    .divider {
-      height: 1px;
-      background: rgba(255,255,255,.07);
-    }
   </style>
 </head>
 <body>
 
-  <p class="page-title">Placeholder — gradiente por nombre · texto en bold desde abajo · máx. 3 líneas</p>
+<p class="page-title">Placeholder · gradiente por nombre · bold desde abajo · máx 3 líneas</p>
 
-  <!-- Rendered by JS below -->
-  <div id="sections"></div>
+<!-- ── 10px ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <div class="section-header">
+    <span class="size-label">10px</span>
+    <span class="token-label">--mdc-typography-overline-font-size</span>
+  </div>
+  <div class="row">
+    <div class="card g3"><div class="name fs-10">Jazz</div></div>
+    <div class="card g6"><div class="name fs-10">My Workout Mix</div></div>
+    <div class="card g1"><div class="name fs-10">Late Night Deep Focus</div></div>
+    <div class="card g4"><div class="name fs-10">The Very Best of 80s Pop &amp; Rock Classics</div></div>
+    <div class="card g7"><div class="name fs-10">Early 2000s Hip Hop and R&amp;B — The Ultimate Collection of Hits</div></div>
+  </div>
+</div>
 
-  <script>
-    // ── Nombres representativos con longitudes variadas ──────────────────────
-    const NAMES = [
-      'Jazz',
-      'My Workout Mix',
-      'Late Night Deep Focus',
-      'The Very Best of 80s Pop & Rock Classics',
-      'Early 2000s Hip Hop and R&B — The Ultimate Collection of Hits',
-    ];
+<div class="divider"></div>
 
-    // ── Gradiente determinista por nombre (hash djb2 simplificado) ──────────
-    function gradientIndex(name) {
-      let h = 5381;
-      for (let i = 0; i < name.length; i++) {
-        h = ((h << 5) + h + name.charCodeAt(i)) >>> 0;
-      }
-      return h % 8;
-    }
+<!-- ── 11px ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <div class="section-header">
+    <span class="size-label">11px</span>
+    <span class="token-label">(sin token estándar)</span>
+  </div>
+  <div class="row">
+    <div class="card g3"><div class="name fs-11">Jazz</div></div>
+    <div class="card g6"><div class="name fs-11">My Workout Mix</div></div>
+    <div class="card g1"><div class="name fs-11">Late Night Deep Focus</div></div>
+    <div class="card g4"><div class="name fs-11">The Very Best of 80s Pop &amp; Rock Classics</div></div>
+    <div class="card g7"><div class="name fs-11">Early 2000s Hip Hop and R&amp;B — The Ultimate Collection of Hits</div></div>
+  </div>
+</div>
 
-    // ── Opciones de tamaño con su token de HA ───────────────────────────────
-    const SIZES = [
-      { px: 10, token: '--mdc-typography-overline-font-size' },
-      { px: 11, token: '(sin token estándar)' },
-      { px: 12, token: '--mdc-typography-caption-font-size' },
-      { px: 13, token: '(body-small, common in custom cards)' },
-      { px: 14, token: '--mdc-typography-body2-font-size' },
-    ];
+<div class="divider"></div>
 
-    // ── Render ───────────────────────────────────────────────────────────────
-    const container = document.getElementById('sections');
+<!-- ── 12px ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <div class="section-header">
+    <span class="size-label">12px</span>
+    <span class="token-label">--mdc-typography-caption-font-size</span>
+  </div>
+  <div class="row">
+    <div class="card g3"><div class="name fs-12">Jazz</div></div>
+    <div class="card g6"><div class="name fs-12">My Workout Mix</div></div>
+    <div class="card g1"><div class="name fs-12">Late Night Deep Focus</div></div>
+    <div class="card g4"><div class="name fs-12">The Very Best of 80s Pop &amp; Rock Classics</div></div>
+    <div class="card g7"><div class="name fs-12">Early 2000s Hip Hop and R&amp;B — The Ultimate Collection of Hits</div></div>
+  </div>
+</div>
 
-    SIZES.forEach(({ px, token }, si) => {
-      if (si > 0) {
-        const div = document.createElement('div');
-        div.className = 'divider';
-        container.appendChild(div);
-      }
+<div class="divider"></div>
 
-      const section = document.createElement('div');
-      section.className = 'section';
-      section.style.setProperty('--fs', px + 'px');
+<!-- ── 13px ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <div class="section-header">
+    <span class="size-label">13px</span>
+    <span class="token-label">(body-small, frecuente en custom cards)</span>
+  </div>
+  <div class="row">
+    <div class="card g3"><div class="name fs-13">Jazz</div></div>
+    <div class="card g6"><div class="name fs-13">My Workout Mix</div></div>
+    <div class="card g1"><div class="name fs-13">Late Night Deep Focus</div></div>
+    <div class="card g4"><div class="name fs-13">The Very Best of 80s Pop &amp; Rock Classics</div></div>
+    <div class="card g7"><div class="name fs-13">Early 2000s Hip Hop and R&amp;B — The Ultimate Collection of Hits</div></div>
+  </div>
+</div>
 
-      section.innerHTML = `
-        <div class="section-header">
-          <span class="size-label">${px}px</span>
-          <span class="token-label">${token}</span>
-        </div>
-        <div class="row" id="row-${px}"></div>
-      `;
-      container.appendChild(section);
+<div class="divider"></div>
 
-      const row = section.querySelector('.row');
-      NAMES.forEach(name => {
-        const idx = gradientIndex(name);
-        const card = document.createElement('div');
-        card.className = `card g${idx}`;
-        card.innerHTML = `<div class="name">${name}</div>`;
-        row.appendChild(card);
-      });
-    });
-  </script>
+<!-- ── 14px ─────────────────────────────────────────────────────────── -->
+<div class="section">
+  <div class="section-header">
+    <span class="size-label">14px</span>
+    <span class="token-label">--mdc-typography-body2-font-size</span>
+  </div>
+  <div class="row">
+    <div class="card g3"><div class="name fs-14">Jazz</div></div>
+    <div class="card g6"><div class="name fs-14">My Workout Mix</div></div>
+    <div class="card g1"><div class="name fs-14">Late Night Deep Focus</div></div>
+    <div class="card g4"><div class="name fs-14">The Very Best of 80s Pop &amp; Rock Classics</div></div>
+    <div class="card g7"><div class="name fs-14">Early 2000s Hip Hop and R&amp;B — The Ultimate Collection of Hits</div></div>
+  </div>
+</div>
+
 </body>
 </html>
