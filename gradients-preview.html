@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradient Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 40px 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 140px);
+      gap: 16px;
+    }
+
+    .card {
+      width: 140px;
+      height: 140px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.12s ease, filter 0.15s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover { transform: scale(1.04); filter: brightness(1.1); }
+    .card:active { transform: scale(0.96); }
+
+    .card svg {
+      width: 36px;
+      height: 36px;
+      fill: rgba(255,255,255,0.85);
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .card .label {
+      color: rgba(255,255,255,0.9);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+
+    .card .num {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* 8 degradados */
+    .g1 { background: linear-gradient(135deg, #FF6B6B, #845EC2); }
+    .g2 { background: linear-gradient(135deg, #1CB5E0, #000046); }
+    .g3 { background: linear-gradient(135deg, #56AB2F, #1D3557); }
+    .g4 { background: linear-gradient(135deg, #667EEA, #764BA2); }
+    .g5 { background: linear-gradient(135deg, #EB5757, #2D1B69); }
+    .g6 { background: linear-gradient(135deg, #4FC3F7, #1565C0); }
+    .g7 { background: linear-gradient(135deg, #F7971E, #C0392B); }
+    .g8 { background: linear-gradient(135deg, #434343, #000000); }
+
+    .row-label {
+      color: rgba(255,255,255,0.35);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gradientes placeholder</h1>
+
+  <div class="grid">
+    <div class="card g1">
+      <span class="num">1</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Sunset</span>
+    </div>
+    <div class="card g2">
+      <span class="num">2</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Ocean</span>
+    </div>
+    <div class="card g3">
+      <span class="num">3</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Forest</span>
+    </div>
+    <div class="card g4">
+      <span class="num">4</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Twilight</span>
+    </div>
+    <div class="card g5">
+      <span class="num">5</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Ember</span>
+    </div>
+    <div class="card g6">
+      <span class="num">6</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Arctic</span>
+    </div>
+    <div class="card g7">
+      <span class="num">7</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Mango</span>
+    </div>
+    <div class="card g8">
+      <span class="num">8</span>
+      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
+      <span class="label">Midnight</span>
+    </div>
+  </div>
+
+  <p class="row-label">Cada cover usa el degradado asignado determinísticamente por su URI</p>
+</body>
+</html>
