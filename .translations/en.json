@@ -29,5 +29,7 @@
   "error_instance_not_found": "Music Assistant instance not found. Check entity_id.",
   "error_loading_content": "Error loading content",
   "state_no_items": "No items found in library",
-  "aria_play": "Play"
+  "aria_play": "Play",
+  "editor_provider_instance": "Filter by source",
+  "provider_all": "All sources"
 }
