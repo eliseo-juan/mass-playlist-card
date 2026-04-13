@@ -3,146 +3,173 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gradient Preview</title>
+  <title>Gradient + Text Preview</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: #111;
       min-height: 100vh;
+      padding: 40px 32px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 40px;
-      padding: 40px 20px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      gap: 48px;
     }
 
-    h1 {
-      color: #fff;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
+    /* ── Page header ── */
+    .page-title {
+      color: rgba(255,255,255,.35);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      opacity: 0.5;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 140px);
-      gap: 16px;
+    /* ── Section (one per font size) ── */
+    .section { display: flex; flex-direction: column; gap: 12px; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
     }
 
+    .size-label {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .token-label {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,.3);
+    }
+
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ── Card ── */
     .card {
       width: 140px;
       height: 140px;
       border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: transform 0.12s ease, filter 0.15s ease;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,0,0,.55);
+      flex-shrink: 0;
+      transition: transform .12s ease, filter .15s ease;
+    }
+    .card:hover  { transform: scale(1.04); filter: brightness(1.08); }
+    .card:active { transform: scale(0.96); }
+
+    /* ── Text overlay ── */
+    .name {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 36px 10px 10px;
+      background: linear-gradient(to top, rgba(0,0,0,.72) 0%, transparent 100%);
+
+      /* Typography — controlled per section via CSS variable */
+      font-size: var(--fs);
+      font-weight: 700;
+      line-height: 1.3;
+      color: #fff;
+      text-align: left;
+      text-shadow: 0 1px 3px rgba(0,0,0,.4);
+
+      /* Max 3 lines */
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    .card:hover { transform: scale(1.04); filter: brightness(1.1); }
-    .card:active { transform: scale(0.96); }
+    /* ── 8 OKLCH gradients (índice 0-7, elegido por hash del nombre) ── */
+    .g0 { background: linear-gradient(in oklch to bottom right, #e63946, #f9a11b); } /* Sunrise    */
+    .g1 { background: linear-gradient(in oklch to top right,    #4361ee, #06d6a0); } /* Lagoon     */
+    .g2 { background: linear-gradient(in oklch to bottom left,  #f72585, #4cc9f0); } /* Cotton     */
+    .g3 { background: linear-gradient(in oklch to top left,     #2dc653, #e040fb); } /* Alien      */
+    .g4 { background: linear-gradient(in oklch to bottom right, #ff6b00, #7209b7); } /* Blaze      */
+    .g5 { background: linear-gradient(in oklch to top right,    #00b4d8, #d00000); } /* Storm      */
+    .g6 { background: linear-gradient(in oklch to bottom left,  #aacc00, #0077b6); } /* Acid Ocean */
+    .g7 { background: linear-gradient(in oklch to top left,     #ff006e, #3a86ff); } /* Neon       */
 
-    .card svg {
-      width: 36px;
-      height: 36px;
-      fill: rgba(255,255,255,0.85);
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-    }
-
-    .card .label {
-      color: rgba(255,255,255,0.9);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-    }
-
-    .card .num {
-      position: absolute;
-      top: 10px;
-      left: 12px;
-      color: rgba(255,255,255,0.4);
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    /*
-     * Gradientes con interpolación OKLCH — evita la zona gris muerta
-     * del sRGB. Cada card usa una dirección distinta (esquinas distintas).
-     */
-    .g1 { background: linear-gradient(in oklch to bottom right, #e63946, #f9a11b); } /* Sunrise     */
-    .g2 { background: linear-gradient(in oklch to top right,    #4361ee, #06d6a0); } /* Lagoon      */
-    .g3 { background: linear-gradient(in oklch to bottom left,  #f72585, #4cc9f0); } /* Cotton      */
-    .g4 { background: linear-gradient(in oklch to top left,     #2dc653, #e040fb); } /* Alien       */
-    .g5 { background: linear-gradient(in oklch to bottom right, #ff6b00, #7209b7); } /* Blaze       */
-    .g6 { background: linear-gradient(in oklch to top right,    #00b4d8, #d00000); } /* Storm       */
-    .g7 { background: linear-gradient(in oklch to bottom left,  #aacc00, #0077b6); } /* Acid Ocean  */
-    .g8 { background: linear-gradient(in oklch to top left,     #ff006e, #3a86ff); } /* Neon        */
-
-    .row-label {
-      color: rgba(255,255,255,0.35);
-      font-size: 11px;
-      letter-spacing: 0.05em;
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,.07);
     }
   </style>
 </head>
 <body>
-  <h1>Gradientes placeholder</h1>
 
-  <div class="grid">
-    <div class="card g1">
-      <span class="num">1</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Sunrise</span>
-    </div>
-    <div class="card g2">
-      <span class="num">2</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Lagoon</span>
-    </div>
-    <div class="card g3">
-      <span class="num">3</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Cotton</span>
-    </div>
-    <div class="card g4">
-      <span class="num">4</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Alien</span>
-    </div>
-    <div class="card g5">
-      <span class="num">5</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Blaze</span>
-    </div>
-    <div class="card g6">
-      <span class="num">6</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Storm</span>
-    </div>
-    <div class="card g7">
-      <span class="num">7</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Acid Ocean</span>
-    </div>
-    <div class="card g8">
-      <span class="num">8</span>
-      <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-      <span class="label">Neon</span>
-    </div>
-  </div>
+  <p class="page-title">Placeholder — gradiente por nombre · texto en bold desde abajo · máx. 3 líneas</p>
 
-  <p class="row-label">Cada cover usa el degradado asignado determinísticamente por su URI</p>
+  <!-- Rendered by JS below -->
+  <div id="sections"></div>
+
+  <script>
+    // ── Nombres representativos con longitudes variadas ──────────────────────
+    const NAMES = [
+      'Jazz',
+      'My Workout Mix',
+      'Late Night Deep Focus',
+      'The Very Best of 80s Pop & Rock Classics',
+      'Early 2000s Hip Hop and R&B — The Ultimate Collection of Hits',
+    ];
+
+    // ── Gradiente determinista por nombre (hash djb2 simplificado) ──────────
+    function gradientIndex(name) {
+      let h = 5381;
+      for (let i = 0; i < name.length; i++) {
+        h = ((h << 5) + h + name.charCodeAt(i)) >>> 0;
+      }
+      return h % 8;
+    }
+
+    // ── Opciones de tamaño con su token de HA ───────────────────────────────
+    const SIZES = [
+      { px: 10, token: '--mdc-typography-overline-font-size' },
+      { px: 11, token: '(sin token estándar)' },
+      { px: 12, token: '--mdc-typography-caption-font-size' },
+      { px: 13, token: '(body-small, common in custom cards)' },
+      { px: 14, token: '--mdc-typography-body2-font-size' },
+    ];
+
+    // ── Render ───────────────────────────────────────────────────────────────
+    const container = document.getElementById('sections');
+
+    SIZES.forEach(({ px, token }, si) => {
+      if (si > 0) {
+        const div = document.createElement('div');
+        div.className = 'divider';
+        container.appendChild(div);
+      }
+
+      const section = document.createElement('div');
+      section.className = 'section';
+      section.style.setProperty('--fs', px + 'px');
+
+      section.innerHTML = `
+        <div class="section-header">
+          <span class="size-label">${px}px</span>
+          <span class="token-label">${token}</span>
+        </div>
+        <div class="row" id="row-${px}"></div>
+      `;
+      container.appendChild(section);
+
+      const row = section.querySelector('.row');
+      NAMES.forEach(name => {
+        const idx = gradientIndex(name);
+        const card = document.createElement('div');
+        card.className = `card g${idx}`;
+        card.innerHTML = `<div class="name">${name}</div>`;
+        row.appendChild(card);
+      });
+    });
+  </script>
 </body>
 </html>
