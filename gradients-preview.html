@@ -77,15 +77,46 @@
       font-weight: 700;
     }
 
-    /* 8 degradados — 3 colores, alto contraste */
-    .g1 { background: linear-gradient(135deg, #FF0080, #FF6B35, #FFD700); }  /* Neon Sunset  */
-    .g2 { background: linear-gradient(135deg, #00416A, #00C9FF, #92FE9D); }  /* Aurora       */
-    .g3 { background: linear-gradient(135deg, #6A0572, #D63AF9, #FF6CAE); }  /* Cosmic Berry */
-    .g4 { background: linear-gradient(135deg, #0052D4, #4364F7, #38EF7D); }  /* Tropical     */
-    .g5 { background: linear-gradient(135deg, #EB3349, #F45C43, #FFD200); }  /* Volcanic     */
-    .g6 { background: linear-gradient(135deg, #0F0C29, #302B63, #9B59B6); }  /* Midnight     */
-    .g7 { background: linear-gradient(135deg, #134E5E, #71B280, #F7971E); }  /* Forest Gold  */
-    .g8 { background: linear-gradient(135deg, #FC5C7D, #6A3093, #4776E6); }  /* Candy Storm  */
+    /* 8 mesh gradients — radial desde esquinas distintas */
+    .g1 { background:
+      radial-gradient(at 0%   0%,   #FF0080 0%, transparent 55%),
+      radial-gradient(at 100% 100%, #FFD700 0%, transparent 55%),
+      #1a0010; }  /* Neon Sunset  */
+
+    .g2 { background:
+      radial-gradient(at 100% 0%,   #92FE9D 0%, transparent 55%),
+      radial-gradient(at 0%   100%, #00C9FF 0%, transparent 55%),
+      #001020; }  /* Aurora       */
+
+    .g3 { background:
+      radial-gradient(at 0%   100%, #FF6CAE 0%, transparent 55%),
+      radial-gradient(at 100% 0%,   #6A0572 0%, transparent 55%),
+      #1a0030; }  /* Cosmic Berry */
+
+    .g4 { background:
+      radial-gradient(at 0%   0%,   #38EF7D 0%, transparent 55%),
+      radial-gradient(at 100% 100%, #0052D4 0%, transparent 55%),
+      #001a0a; }  /* Tropical     */
+
+    .g5 { background:
+      radial-gradient(at 100% 0%,   #FFD200 0%, transparent 55%),
+      radial-gradient(at 0%   100%, #EB3349 0%, transparent 55%),
+      #1a0500; }  /* Volcanic     */
+
+    .g6 { background:
+      radial-gradient(at 0%   0%,   #9B59B6 0%, transparent 55%),
+      radial-gradient(at 100% 100%, #302B63 0%, transparent 55%),
+      #0a0a1a; }  /* Midnight     */
+
+    .g7 { background:
+      radial-gradient(at 100% 100%, #F7971E 0%, transparent 55%),
+      radial-gradient(at 0%   0%,   #134E5E 0%, transparent 55%),
+      #0a1a10; }  /* Forest Gold  */
+
+    .g8 { background:
+      radial-gradient(at 0%   100%, #4776E6 0%, transparent 55%),
+      radial-gradient(at 100% 0%,   #FC5C7D 0%, transparent 55%),
+      #1a0a1a; }  /* Candy Storm  */
 
     .row-label {
       color: rgba(255,255,255,0.35);
