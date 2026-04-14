@@ -115,6 +115,7 @@ manual_items:
 | `rows` | `number` | _(auto)_ | Number of rows to display. **Required for Masonry dashboards.** Leave unset in Sections — the card auto-fits to the card height. |
 | `manual_items` | `list` | `[]` | List of Music Assistant URIs (only used when `order_by: manual`) |
 | `config_entry_id` | `string` | _(auto-detected)_ | Override the Music Assistant config entry ID |
+| `provider_instance` | `string` | _(all sources)_ | Filter content to a specific Music Assistant provider/account (e.g. one of several Spotify accounts). Only appears in the visual editor when 2 or more sources are detected. Leave empty to show content from all sources. |
 
 ### `order_by` values
 

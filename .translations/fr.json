@@ -30,5 +30,7 @@
   "error_instance_not_found": "Instance Music Assistant introuvable. Vérifiez entity_id.",
   "error_loading_content": "Erreur lors du chargement du contenu",
   "state_no_items": "Aucun élément trouvé dans la bibliothèque",
-  "aria_play": "Lire"
+  "aria_play": "Lire",
+  "editor_provider_instance": "Filtrer par source",
+  "provider_all": "Toutes les sources"
 }
