@@ -6,6 +6,7 @@ export const MEDIA_TYPES = [
   { value: 'playlist', labelKey: 'type_playlist' },
   { value: 'album',    labelKey: 'type_album'    },
   { value: 'artist',   labelKey: 'type_artist'   },
+  { value: 'radio',    labelKey: 'type_radio'    },
 ];
 
 // order_by values exposed by Music Assistant

@@ -8,6 +8,7 @@
   "type_playlist": "Playlists",
   "type_album": "Albums",
   "type_artist": "Artists",
+  "type_radio": "Radios",
   "order_timestamp_added_desc": "Date added (newest first)",
   "order_timestamp_added": "Date added (oldest first)",
   "order_last_played_desc": "Last played (newest first)",

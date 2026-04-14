@@ -8,6 +8,7 @@
   "type_playlist": "Listes de lecture",
   "type_album": "Albums",
   "type_artist": "Artistes",
+  "type_radio": "Radios",
   "order_timestamp_added_desc": "Date d'ajout (plus récent d'abord)",
   "order_timestamp_added": "Date d'ajout (plus ancien d'abord)",
   "order_last_played_desc": "Dernière lecture (plus récent d'abord)",
