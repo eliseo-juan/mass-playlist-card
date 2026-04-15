@@ -86,11 +86,12 @@ class MassPlaylistCardEditor extends HTMLElement {
         }
       }
       this._providers    = [...seen.entries()].map(([value, label]) => ({ value, label }));
+      this._providersKey = key;
+      return this._providers;
     } catch {
-      this._providers = [];
+      // Don't cache errors — allow the next render to retry
+      return [];
     }
-    this._providersKey = key;
-    return this._providers;
   }
 
   async _renderEditor() {
@@ -265,7 +266,7 @@ class MassPlaylistCardEditor extends HTMLElement {
         label: localize('editor_rows', lang),
         selector: { number: { min: 1, max: 20, step: 1, mode: 'box' } },
       }] : []),
-      ...(providers.length > 1 ? [{
+      ...(providers.length >= 1 || !!this._config.provider_instance ? [{
         name:  'provider_instance',
         label: localize('editor_provider_instance', lang),
         selector: {

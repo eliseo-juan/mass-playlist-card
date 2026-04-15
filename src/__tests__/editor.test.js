@@ -176,3 +176,45 @@ describe('MassPlaylistCardEditor — _renderEditor concurrent guard', () => {
     await Promise.all([p1, p2]);
   });
 });
+
+// ─── _fetchProviders — error caching ──────────────────────────────────────────
+
+describe('MassPlaylistCardEditor — _fetchProviders error caching', () => {
+  let editor;
+
+  beforeEach(() => {
+    editor = document.createElement('mass-coverwall-card-editor');
+    editor.setConfig({ entity_id: ['media_player.salon'] });
+    // Simulate hass that always rejects callWS
+    editor._hass = { callWS: async () => { throw new Error('network error'); } };
+  });
+
+  it('returns empty array on error', async () => {
+    const result = await editor._fetchProviders();
+    expect(result).toEqual([]);
+  });
+
+  it('does not cache errors — _providers stays null after failure', async () => {
+    await editor._fetchProviders();
+    expect(editor._providers).toBeNull();
+    expect(editor._providersKey).toBeNull();
+  });
+
+  it('retries on subsequent calls after a failure', async () => {
+    await editor._fetchProviders();  // fails, not cached
+    // Now simulate a successful hass
+    editor._hass = {
+      callWS: async (msg) => {
+        if (msg.type === 'config/entity_registry/list') {
+          return [{ entity_id: 'media_player.salon', config_entry_id: 'entry1' }];
+        }
+        return { response: { items: [
+          { provider_mappings: [{ provider_instance_id: 'spotify_1', provider_domain: 'spotify' }] },
+        ]}};
+      },
+    };
+    const result = await editor._fetchProviders();
+    expect(result).toHaveLength(1);
+    expect(result[0].value).toBe('spotify_1');
+  });
+});
