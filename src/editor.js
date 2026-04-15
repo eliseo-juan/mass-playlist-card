@@ -11,6 +11,7 @@ class MassPlaylistCardEditor extends HTMLElement {
     this._dragSrcIdx    = null;
     this._providers     = null;
     this._providersKey  = null;
+    this._renderGen     = 0;
   }
 
   set hass(hass) {
@@ -27,10 +28,11 @@ class MassPlaylistCardEditor extends HTMLElement {
     const entityId = Array.isArray(rawId) ? rawId : (rawId ? [rawId] : []);
     const legacy   = (config.entity_ids ?? []).filter(e => e && !entityId.includes(e));
     this._config = {
-      media_type:   'playlist',
-      order_by:     'timestamp_added_desc',
-      item_size:    3,
-      manual_items: [],
+      media_type:        'playlist',
+      order_by:          'timestamp_added_desc',
+      item_size:         3,
+      manual_items:      [],
+      provider_instance: '',
       ...config,
       entity_id: [...entityId, ...legacy].filter(Boolean),
     };
@@ -92,6 +94,7 @@ class MassPlaylistCardEditor extends HTMLElement {
   }
 
   async _renderEditor() {
+    const gen      = ++this._renderGen;
     const shadow   = this.shadowRoot;
     const isManual = this._config.order_by === 'manual';
     const lang     = this._hass?.language || 'en';
@@ -221,6 +224,7 @@ class MassPlaylistCardEditor extends HTMLElement {
 
     // ── ha-form for main fields ──
     const providers = this._hass ? await this._fetchProviders() : [];
+    if (gen !== this._renderGen) return;
     const formHost  = shadow.getElementById('form-host');
     const form      = document.createElement('ha-form');
     form.hass       = this._hass;
