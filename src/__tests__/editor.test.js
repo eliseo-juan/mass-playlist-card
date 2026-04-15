@@ -69,6 +69,16 @@ describe('MassPlaylistCardEditor — setConfig', () => {
     expect(editor._config.manual_items).toEqual([]);
   });
 
+  it('sets default provider_instance to empty string', () => {
+    editor.setConfig({ entity_id: [] });
+    expect(editor._config.provider_instance).toBe('');
+  });
+
+  it('preserves provided provider_instance over default', () => {
+    editor.setConfig({ entity_id: [], provider_instance: 'spotify_account1' });
+    expect(editor._config.provider_instance).toBe('spotify_account1');
+  });
+
   it('respects provided values over defaults', () => {
     editor.setConfig({ entity_id: [], media_type: 'album', order_by: 'name', item_size: 6 });
     expect(editor._config.media_type).toBe('album');
@@ -132,5 +142,79 @@ describe('MassPlaylistCardEditor — _fire', () => {
 
     expect(bubbled).toBe(true);
     document.body.removeEventListener('config-changed', () => {});
+  });
+});
+
+// ─── _renderEditor — concurrent render guard ───────────────────────────────────
+
+describe('MassPlaylistCardEditor — _renderEditor concurrent guard', () => {
+  let editor;
+
+  beforeEach(() => {
+    editor = document.createElement('mass-coverwall-card-editor');
+    editor.setConfig({ entity_id: ['media_player.salon'] });
+    document.body.appendChild(editor);
+  });
+
+  afterEach(() => {
+    if (editor.parentNode) editor.parentNode.removeChild(editor);
+  });
+
+  it('only appends one ha-form even when _renderEditor is called concurrently', async () => {
+    // Trigger two concurrent renders and wait for both to settle
+    await Promise.all([editor._renderEditor(), editor._renderEditor()]);
+
+    const forms = editor.shadowRoot.querySelectorAll('ha-form');
+    expect(forms).toHaveLength(1);
+  });
+
+  it('increments _renderGen on each call so stale renders abort', async () => {
+    const genBefore = editor._renderGen;
+    const p1 = editor._renderEditor();
+    const p2 = editor._renderEditor();
+    expect(editor._renderGen).toBe(genBefore + 2);
+    await Promise.all([p1, p2]);
+  });
+});
+
+// ─── _fetchProviders — error caching ──────────────────────────────────────────
+
+describe('MassPlaylistCardEditor — _fetchProviders error caching', () => {
+  let editor;
+
+  beforeEach(() => {
+    editor = document.createElement('mass-coverwall-card-editor');
+    editor.setConfig({ entity_id: ['media_player.salon'] });
+    // Simulate hass that always rejects callWS
+    editor._hass = { callWS: async () => { throw new Error('network error'); } };
+  });
+
+  it('returns empty array on error', async () => {
+    const result = await editor._fetchProviders();
+    expect(result).toEqual([]);
+  });
+
+  it('does not cache errors — _providers stays null after failure', async () => {
+    await editor._fetchProviders();
+    expect(editor._providers).toBeNull();
+    expect(editor._providersKey).toBeNull();
+  });
+
+  it('retries on subsequent calls after a failure', async () => {
+    await editor._fetchProviders();  // fails, not cached
+    // Now simulate a successful hass
+    editor._hass = {
+      callWS: async (msg) => {
+        if (msg.type === 'config/entity_registry/list') {
+          return [{ entity_id: 'media_player.salon', config_entry_id: 'entry1' }];
+        }
+        return { response: { items: [
+          { provider_mappings: [{ provider_instance_id: 'spotify_1', provider_domain: 'spotify' }] },
+        ]}};
+      },
+    };
+    const result = await editor._fetchProviders();
+    expect(result).toHaveLength(1);
+    expect(result[0].value).toBe('spotify_1');
   });
 });

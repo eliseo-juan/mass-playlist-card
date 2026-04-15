@@ -30,5 +30,7 @@
   "error_instance_not_found": "Instancia de Music Assistant no encontrada. Comprueba entity_id.",
   "error_loading_content": "Error cargando contenido",
   "state_no_items": "No se encontraron elementos en la biblioteca",
-  "aria_play": "Reproducir"
+  "aria_play": "Reproducir",
+  "editor_provider_instance": "Filtrar por fuente",
+  "provider_all": "Todas las fuentes"
 }

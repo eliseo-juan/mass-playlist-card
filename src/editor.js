@@ -6,9 +6,12 @@ class MassPlaylistCardEditor extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this._config     = {};
-    this._hass       = null;
-    this._dragSrcIdx = null;
+    this._config        = {};
+    this._hass          = null;
+    this._dragSrcIdx    = null;
+    this._providers     = null;
+    this._providersKey  = null;
+    this._renderGen     = 0;
   }
 
   set hass(hass) {
@@ -25,10 +28,11 @@ class MassPlaylistCardEditor extends HTMLElement {
     const entityId = Array.isArray(rawId) ? rawId : (rawId ? [rawId] : []);
     const legacy   = (config.entity_ids ?? []).filter(e => e && !entityId.includes(e));
     this._config = {
-      media_type:   'playlist',
-      order_by:     'timestamp_added_desc',
-      item_size:    3,
-      manual_items: [],
+      media_type:        'playlist',
+      order_by:          'timestamp_added_desc',
+      item_size:         3,
+      manual_items:      [],
+      provider_instance: '',
       ...config,
       entity_id: [...entityId, ...legacy].filter(Boolean),
     };
@@ -42,7 +46,56 @@ class MassPlaylistCardEditor extends HTMLElement {
     }));
   }
 
-  _renderEditor() {
+  async _fetchProviders() {
+    const key = (this._config.config_entry_id || '') + '|' +
+                (Array.isArray(this._config.entity_id) ? this._config.entity_id[0] : this._config.entity_id || '') + '|' +
+                (this._config.media_type || 'playlist');
+    if (this._providers !== null && this._providersKey === key) return this._providers;
+
+    try {
+      let configEntryId = this._config.config_entry_id;
+      if (!configEntryId) {
+        const entries  = await this._hass.callWS({ type: 'config/entity_registry/list' });
+        const primaryId = Array.isArray(this._config.entity_id) ? this._config.entity_id[0] : this._config.entity_id;
+        const entry    = entries.find(e => e.entity_id === primaryId);
+        configEntryId  = entry?.config_entry_id;
+      }
+      if (!configEntryId) throw new Error('no config_entry_id');
+
+      const result = await this._hass.callWS({
+        type:         'call_service',
+        domain:       'music_assistant',
+        service:      'get_library',
+        service_data: {
+          config_entry_id: configEntryId,
+          media_type:      this._config.media_type || 'playlist',
+          limit:           200,
+          offset:          0,
+        },
+        return_response: true,
+      });
+      const data  = result?.response ?? result;
+      const items = data?.items || (Array.isArray(data) ? data : []);
+
+      const seen = new Map();
+      for (const item of items) {
+        for (const m of item.provider_mappings ?? []) {
+          if (m.provider_instance_id && !seen.has(m.provider_instance_id)) {
+            seen.set(m.provider_instance_id, m.name ?? m.provider_domain ?? m.provider_instance_id);
+          }
+        }
+      }
+      this._providers    = [...seen.entries()].map(([value, label]) => ({ value, label }));
+      this._providersKey = key;
+      return this._providers;
+    } catch {
+      // Don't cache errors — allow the next render to retry
+      return [];
+    }
+  }
+
+  async _renderEditor() {
+    const gen      = ++this._renderGen;
     const shadow   = this.shadowRoot;
     const isManual = this._config.order_by === 'manual';
     const lang     = this._hass?.language || 'en';
@@ -171,10 +224,12 @@ class MassPlaylistCardEditor extends HTMLElement {
     `;
 
     // ── ha-form for main fields ──
-    const formHost = shadow.getElementById('form-host');
-    const form     = document.createElement('ha-form');
-    form.hass      = this._hass;
-    form.schema    = [
+    const providers = this._hass ? await this._fetchProviders() : [];
+    if (gen !== this._renderGen) return;
+    const formHost  = shadow.getElementById('form-host');
+    const form      = document.createElement('ha-form');
+    form.hass       = this._hass;
+    form.schema     = [
       {
         name:     'entity_id',
         required: true,
@@ -210,6 +265,19 @@ class MassPlaylistCardEditor extends HTMLElement {
         name:  'rows',
         label: localize('editor_rows', lang),
         selector: { number: { min: 1, max: 20, step: 1, mode: 'box' } },
+      }] : []),
+      ...(providers.length >= 1 || !!this._config.provider_instance ? [{
+        name:  'provider_instance',
+        label: localize('editor_provider_instance', lang),
+        selector: {
+          select: {
+            options: [
+              { value: '', label: localize('provider_all', lang) },
+              ...providers,
+            ],
+            mode: 'dropdown',
+          },
+        },
       }] : []),
     ];
     form.data = { ...this._config };

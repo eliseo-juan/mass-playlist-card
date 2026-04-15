@@ -35,10 +35,11 @@ class MassPlaylistCard extends HTMLElement {
     // Migrate legacy entity_ids into entity_id array
     const legacy = (config.entity_ids ?? []).filter(e => e && !entityId.includes(e));
     this._config = {
-      media_type:   'playlist',
-      order_by:     'timestamp_added_desc',
-      item_size:    3,
-      manual_items: [],
+      media_type:        'playlist',
+      order_by:          'timestamp_added_desc',
+      item_size:         3,
+      manual_items:      [],
+      provider_instance: '',
       ...config,
       entity_id: [...entityId, ...legacy].filter(Boolean),
     };
@@ -102,6 +103,9 @@ class MassPlaylistCard extends HTMLElement {
       return;
     }
 
+    const providerFilter = this._config.provider_instance || '';
+    const fetchLimit     = providerFilter ? 500 : this._getVisibleCount();
+
     try {
       const result = await this._hass.callWS({
         type:         'call_service',
@@ -111,13 +115,25 @@ class MassPlaylistCard extends HTMLElement {
           config_entry_id: configEntryId,
           media_type:      this._config.media_type || 'playlist',
           order_by:        this._config.order_by,
-          limit:           this._getVisibleCount(),
+          limit:           fetchLimit,
           offset:          0,
         },
         return_response: true,
       });
-      const data  = result?.response ?? result;
-      this._items = data?.items || (Array.isArray(data) ? data : []);
+      const data = result?.response ?? result;
+      let items  = data?.items || (Array.isArray(data) ? data : []);
+
+      if (providerFilter) {
+        items = items.filter(item =>
+          item.provider_mappings?.some(
+            m => m.provider_instance_id === providerFilter ||
+                 m.provider_domain === providerFilter
+          )
+        );
+        items = items.slice(0, this._getVisibleCount());
+      }
+
+      this._items = items;
     } catch (err) {
       this._error = err.message || localize('error_loading_content', this._hass?.language);
     }

@@ -177,3 +177,102 @@ describe('MassPlaylistCard — _getVisibleCount', () => {
     expect(count).toBeGreaterThan(0);
   });
 });
+
+// ─── provider_instance config ─────────────────────────────────────────────────
+
+describe('MassPlaylistCard — provider_instance config', () => {
+  let card;
+
+  beforeEach(() => {
+    card = document.createElement('mass-coverwall-card');
+  });
+
+  afterEach(() => {
+    if (card.parentNode) card.parentNode.removeChild(card);
+  });
+
+  it('defaults provider_instance to empty string', () => {
+    card.setConfig({ entity_id: ['media_player.salon'] });
+    expect(card._config.provider_instance).toBe('');
+  });
+
+  it('stores provider_instance from config', () => {
+    card.setConfig({ entity_id: ['media_player.salon'], provider_instance: 'spotify_account1' });
+    expect(card._config.provider_instance).toBe('spotify_account1');
+  });
+});
+
+// ─── provider_instance filtering ──────────────────────────────────────────────
+
+describe('MassPlaylistCard — provider_instance filtering', () => {
+  let card;
+
+  const makeItem = (name, providerMappings) => ({
+    uri:               `library://playlist/${name}`,
+    name,
+    metadata:          { images: [{ url: `https://example.com/${name}.jpg` }] },
+    provider_mappings: providerMappings,
+  });
+
+  const itemAccount1   = makeItem('Playlist A', [{ provider_instance_id: 'spotify_account1', provider_domain: 'spotify' }]);
+  const itemAccount2   = makeItem('Playlist B', [{ provider_instance_id: 'spotify_account2', provider_domain: 'spotify' }]);
+  const itemBoth       = makeItem('Playlist C', [
+    { provider_instance_id: 'spotify_account1', provider_domain: 'spotify' },
+    { provider_instance_id: 'spotify_account2', provider_domain: 'spotify' },
+  ]);
+  const itemNoMappings = makeItem('Playlist D', undefined);
+
+  const mockHass = (items) => ({
+    language:    'en',
+    auth:        { data: { hassUrl: 'http://homeassistant.local' } },
+    callWS:      async () => ({ response: { items } }),
+    callService: async () => {},
+  });
+
+  beforeEach(() => {
+    card = document.createElement('mass-coverwall-card');
+    card.setConfig({ entity_id: ['media_player.salon'], rows: 10 });
+    card._configEntryId = 'test-entry-id';
+    card._containerW    = 300;
+  });
+
+  afterEach(() => {
+    if (card.parentNode) card.parentNode.removeChild(card);
+  });
+
+  it('shows all items when provider_instance is empty', async () => {
+    card._hass = mockHass([itemAccount1, itemAccount2, itemBoth]);
+    card._config.provider_instance = '';
+    await card._fetchItems();
+    expect(card._items).toHaveLength(3);
+  });
+
+  it('filters to items matching provider_instance_id of first account', async () => {
+    card._hass = mockHass([itemAccount1, itemAccount2, itemBoth, itemNoMappings]);
+    card._config.provider_instance = 'spotify_account1';
+    await card._fetchItems();
+    expect(card._items.map(i => i.name)).toEqual(['Playlist A', 'Playlist C']);
+  });
+
+  it('filters to items matching provider_instance_id of second account', async () => {
+    card._hass = mockHass([itemAccount1, itemAccount2, itemBoth, itemNoMappings]);
+    card._config.provider_instance = 'spotify_account2';
+    await card._fetchItems();
+    expect(card._items.map(i => i.name)).toEqual(['Playlist B', 'Playlist C']);
+  });
+
+  it('excludes items without provider_mappings when filter is active', async () => {
+    card._hass = mockHass([itemAccount1, itemNoMappings]);
+    card._config.provider_instance = 'spotify_account1';
+    await card._fetchItems();
+    expect(card._items.map(i => i.name)).toEqual(['Playlist A']);
+  });
+
+  it('supports filtering by provider_domain', async () => {
+    const itemApple = makeItem('Apple Playlist', [{ provider_instance_id: 'apple_music_1', provider_domain: 'apple_music' }]);
+    card._hass = mockHass([itemAccount1, itemApple]);
+    card._config.provider_instance = 'apple_music';
+    await card._fetchItems();
+    expect(card._items.map(i => i.name)).toEqual(['Apple Playlist']);
+  });
+});
